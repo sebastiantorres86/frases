@@ -1,25 +1,93 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import { Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Link from "@material-ui/core/Link";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
-function App() {
+function Copyright() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Typography variant="body2" color="textSecondary">
+      {"Copyright © "}
+      <Link color="inherit" href="https://material-ui.com/">
+        BGH
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
   );
 }
 
-export default App;
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100vh",
+  },
+  main: {
+    marginTop: theme.spacing(8),
+    marginBottom: theme.spacing(2),
+  },
+  footer: {
+    padding: theme.spacing(3, 2),
+    marginTop: "auto",
+    backgroundColor:
+      theme.palette.type === "dark"
+        ? theme.palette.grey[200]
+        : theme.palette.grey[800],
+  },
+}));
+
+const Buttons = ({ handleClick, text }) => (
+  <Button variant="contained" color="primary" onClick={handleClick}>
+    {text}
+  </Button>
+);
+
+export default function App({ anecdotes }) {
+  const darkTheme = createMuiTheme({
+    palette: {
+      type: "dark",
+    },
+  });
+
+  const classes = useStyles();
+
+  const [selected, setSelected] = useState(0);
+
+  const getRandomInteger = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  const handleClick = () => {
+    setSelected(getRandomInteger(0, 7));
+  };
+
+  return (
+    <ThemeProvider theme={darkTheme}>
+      <div className={classes.root}>
+        <CssBaseline />
+        <Container component="main" className={classes.main} maxWidth="sm">
+          <Typography variant="h2" component="h1" gutterBottom>
+            BGH Frases
+          </Typography>
+          <Typography variant="h5" component="h2" gutterBottom>
+            "{anecdotes[selected][0]}"
+          </Typography>
+          <Typography variant="body1">
+            &#8212; {anecdotes[selected][1]}
+          </Typography>
+          <br />
+          <Buttons handleClick={handleClick} text="próxima frase" />
+        </Container>
+        <footer className={classes.footer}>
+          <Container maxWidth="sm">
+            <Copyright />
+          </Container>
+        </footer>
+      </div>
+    </ThemeProvider>
+  );
+}
